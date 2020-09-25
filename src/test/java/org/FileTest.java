@@ -10,6 +10,7 @@ import org.common.fastdfs.common.MyException;
 import org.common.fastdfs.common.NameValuePair;
 import org.junit.Test;
 import org.springframework.boot.test.json.JsonbTester;
+import java.util.Collections;
 
 import java.io.*;
 import java.util.List;
@@ -20,7 +21,8 @@ import java.util.List;
  */
 public class FileTest {
 
-    private List<String> fileName = Lists.newArrayList();
+    // 多线程调用，要注意线程安全
+    private List<String> fileNames = Collections.synchronizedList(Lists.newArrayList());
     private String groupName = "group1";
 
     @Test
@@ -30,8 +32,9 @@ public class FileTest {
 
         TrackerClient tracker = new TrackerClient();
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 15; i++) {
             String f = "/Users/onlyone/open-github/fastdfs-client-example/source/" + i + ".txt";
+            String fileName = i + ".txt";
             Runnable t = () -> {
 
                 TrackerServer trackerServer = null;
@@ -43,8 +46,7 @@ public class FileTest {
                 StorageClient storageClient = new StorageClient(trackerServer, null);
 
                 NameValuePair[] metaList = new NameValuePair[1];
-                String local_filename = "pom.xml";
-                metaList[0] = new NameValuePair("fileName", local_filename);
+                metaList[0] = new NameValuePair("fileName", fileName);
                 File file = new File(f);
                 InputStream inputStream = null;
                 try {
@@ -67,19 +69,17 @@ public class FileTest {
                 String[] result = new String[0];
                 try {
                     result = storageClient.upload_file(bytes, null, metaList);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (MyException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fileName.add(result[1]);
+                fileNames.add(result[1]);
                 System.out.println(JSON.toJSONString(result));
             };
             new Thread(t).start();
         }
-        Thread.sleep(6000);
+        Thread.sleep(8000);
 
-        System.out.println("上传的文件个数：" + JSON.toJSONString(fileName.size()));
+        System.out.println("上传的文件个数：" + JSON.toJSONString(fileNames.size()));
         download();
 
         Thread.sleep(30000);
@@ -89,7 +89,7 @@ public class FileTest {
         ClientGlobal.init("fdfs_client.conf");
 
 
-        for (String s : fileName) {
+        for (String s : fileNames) {
 
             Runnable t2 = () -> {
 
@@ -104,10 +104,7 @@ public class FileTest {
                 byte[] result = new byte[0];
                 try {
                     result = storageClient.download_file(groupName, s);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (MyException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
                 }
 //            String local_filename = "1.txt";
 //            writeByteToFile(result, local_filename);
