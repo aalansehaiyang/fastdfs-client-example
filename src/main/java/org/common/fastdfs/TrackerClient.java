@@ -24,6 +24,9 @@ public class TrackerClient {
   protected TrackerGroup tracker_group;
   protected byte errno;
 
+  public TrackerGroup  getTrackerGroup(){
+    return tracker_group;
+  }
   /**
    * constructor with global tracker group
    */

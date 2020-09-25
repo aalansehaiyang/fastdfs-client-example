@@ -10,6 +10,7 @@ import org.common.fastdfs.common.MyException;
 import org.common.fastdfs.common.NameValuePair;
 import org.junit.Test;
 import org.springframework.boot.test.json.JsonbTester;
+
 import java.util.Collections;
 
 import java.io.*;
@@ -32,6 +33,7 @@ public class FileTest {
 
         TrackerClient tracker = new TrackerClient();
 
+
         for (int i = 1; i <= 15; i++) {
             String f = "/Users/onlyone/open-github/fastdfs-client-example/source/" + i + ".txt";
             String fileName = i + ".txt";
@@ -40,9 +42,15 @@ public class FileTest {
                 TrackerServer trackerServer = null;
                 try {
                     trackerServer = tracker.getConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
                 }
+                // 打印 Socket 信息，验证是否同一个?
+                // 结论：每次上传文件，都创建了一个 Socket
+                try {
+                    System.out.println("Socket=" + trackerServer.getSocket()+"  tracker_group="+tracker.getTrackerGroup().tracker_servers.length);
+                } catch (Exception e) {
+                }
+
                 StorageClient storageClient = new StorageClient(trackerServer, null);
 
                 NameValuePair[] metaList = new NameValuePair[1];
