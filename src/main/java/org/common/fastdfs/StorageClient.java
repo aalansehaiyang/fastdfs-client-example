@@ -862,6 +862,7 @@ public class StorageClient {
 
       throw ex;
     } finally {
+      this.trackerServer.close();
       if (bNewConnection) {
         try {
           this.storageServer.close();
