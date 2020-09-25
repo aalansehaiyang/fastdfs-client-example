@@ -47,7 +47,7 @@ public class FileTest {
                 // 打印 Socket 信息，验证是否同一个?
                 // 结论：每次上传文件，都创建了一个 Socket
                 try {
-                    System.out.println("Socket=" + trackerServer.getSocket()+"  tracker_group="+tracker.getTrackerGroup().tracker_servers.length);
+                    System.out.println("Socket=" + trackerServer.getSocket() + "  tracker_group=" + tracker.getTrackerGroup().tracker_servers.length);
                 } catch (Exception e) {
                 }
 

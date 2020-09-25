@@ -862,7 +862,7 @@ public class StorageClient {
 
       throw ex;
     } finally {
-      this.trackerServer.close();
+//      this.trackerServer.close();
       if (bNewConnection) {
         try {
           this.storageServer.close();
@@ -1747,6 +1747,7 @@ public class StorageClient {
       if (this.storageServer == null) {
         throw new MyException("getStoreStorage fail, errno code: " + tracker.getErrorCode());
       }
+      trackerServer.close();
       return true;
     }
   }
@@ -1767,6 +1768,7 @@ public class StorageClient {
       if (this.storageServer == null) {
         throw new MyException("getStoreStorage fail, errno code: " + tracker.getErrorCode());
       }
+      trackerServer.close();
       return true;
     }
   }
@@ -1787,6 +1789,7 @@ public class StorageClient {
       if (this.storageServer == null) {
         throw new MyException("getStoreStorage fail, errno code: " + tracker.getErrorCode());
       }
+      trackerServer.close();
       return true;
     }
   }
